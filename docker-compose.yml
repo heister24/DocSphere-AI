@@ -1,0 +1,7 @@
+services:
+  redis:
+    image: redis
+    container_name: Docsphere-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"

@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Build output
+dist/
+build/
+
+# Coverage
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+docker-data/
+*.pid
+
+# Temporary files
+tmp/
+temp/
+
+# Redis / database local data
+redis-data/
+mongo-data/
+postgres-data/
