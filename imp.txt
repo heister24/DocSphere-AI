@@ -1,0 +1,2 @@
+findOne - need object as parameter in mongodb search
+findbyid takes string

@@ -288,3 +288,20 @@ export const verifyOTPForForgotPassword = async (req, res) => {
     });
   }
 };
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    return res.status(200).json({
+      success: true,
+      message: "User fetched",
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "internal server error",
+    });
+  }
+};
