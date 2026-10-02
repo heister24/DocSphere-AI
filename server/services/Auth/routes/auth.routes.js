@@ -2,6 +2,7 @@ import express from "express";
 import {
   getMe,
   login,
+  logout,
   sendOTPForForgotPassword,
   sendOTPForRegister,
   verifyOTPForForgotPassword,
@@ -17,5 +18,6 @@ authRoutes.post("/login", login);
 authRoutes.post("/forgot-password/request-otp", sendOTPForForgotPassword);
 authRoutes.put("/forgot-password/verify-otp", verifyOTPForForgotPassword);
 authRoutes.get("/get-user", authMiddleware, getMe);
+authRoutes.get("/logout", authMiddleware, logout);
 
 export default authRoutes;

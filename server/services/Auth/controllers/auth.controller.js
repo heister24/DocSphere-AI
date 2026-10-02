@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import sendOTPEmail from "../services/email.service.js";
 import { deleteOTP, getOTP, storeOTP } from "../services/otp.service.js";
+import { deleteCachedUser } from "../services/userCache.service.js";
 import generateJWTToken from "../utils/generateJWTToken.js";
 import generateOTP from "../utils/generateOTP.js";
 import bcrypt from "bcrypt";
@@ -302,6 +303,34 @@ export const getMe = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "internal server error",
+    });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+
+    if (userId) {
+      await deleteCachedUser(userId);
+    }
+
+    res.clearCookie("docsphereAuthToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    });
+  } catch (error) {
+    console.log(`Logout controller error: ${error.message}`);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
     });
   }
 };
