@@ -12,12 +12,13 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@langchain/textsplitters": "^1.0.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
     "mongoose": "^9.10.3",
     "multer": "^2.4.0",
     "nodemon": "^3.1.14",
-    "pdf-parser": "^1.0.5"
+    "pdf-parse": "^2.4.5"
   }
 }
