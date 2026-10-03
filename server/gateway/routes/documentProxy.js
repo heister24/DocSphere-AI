@@ -1,0 +1,23 @@
+import express from "express";
+import { createProxyMiddleware } from "http-proxy-middleware";
+import authGateway from "../middleware.js/authGateway.js";
+
+const documentRouteProxy = express.Router();
+
+documentRouteProxy.use(
+  "/",
+  authGateway,
+  createProxyMiddleware({
+    target: process.env.DOCUMENT_URL,
+    changeOrigin: true,
+    on: {
+      proxyReq: (proxyReq, req, res) => {
+        if (req.userId) {
+          proxyReq.setHeader("x-user-id", req.userId);
+        }
+      },
+    },
+  }),
+);
+
+export default documentRouteProxy;

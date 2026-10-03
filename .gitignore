@@ -38,3 +38,5 @@ temp/
 redis-data/
 mongo-data/
 postgres-data/
+
+.txt

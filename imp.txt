@@ -1,2 +1,104 @@
 findOne - need object as parameter in mongodb search
 findbyid takes string
+
+import jwt from "jsonwebtoken";
+
+export const verifyGatewayAuth = (req, res, next) => {
+  try {
+    const token = req.cookies?.docsphereAuthToken;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication token missing",
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded?.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token payload",
+      });
+    }
+
+    // Attach to request so the proxy can forward it
+    req.userId = decoded.userId;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: Invalid or expired token",
+    });
+  }
+};
+
+
+
+
+documentProxy.js 
+import express from "express";
+import { createProxyMiddleware } from "http-proxy-middleware";
+import { verifyGatewayAuth } from "../middleware/authGateway.js";
+
+const documentRouteProxy = express.Router();
+
+// Protect document routes and inject user header
+documentRouteProxy.use(
+  "/",
+  verifyGatewayAuth,
+  createProxyMiddleware({
+    target: process.env.DOCUMENT_URL,
+    changeOrigin: true,
+    on: {
+      proxyReq: (proxyReq, req, res) => {
+        // Forward userId as a trusted internal header to Document service
+        if (req.userId) {
+          proxyReq.setHeader("x-user-id", req.userId);
+        }
+      },
+    },
+  })
+);
+
+export default documentRouteProxy;
+
+
+In Document Service: Add an Auth Context Middleware
+const authMiddleware = (req, res, next) => {
+  const userId = req.headers["x-user-id"];
+
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: User ID missing in gateway header",
+    });
+  }
+
+  // Populate req.user so controllers work seamlessly
+  req.user = { _id: userId };
+  next();
+};
+
+export default authMiddleware;
+
+
+
+In Document Service: Use it in 
+
+document.routes.js
+
+import express from "express";
+import { uploadDocument } from "../controllers/document.controller.js";
+import upload from "../middlewares/uploadMiddleware.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
+
+const documentRouter = express.Router();
+
+documentRouter.post(
+  "/upload-pdf",
+  authMiddleware,
+  upload.single("document"),
+  uploadDocument
+);
+
+export default documentRouter;

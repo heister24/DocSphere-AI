@@ -1,8 +1,8 @@
 {
-  "name": "gateway",
+  "name": "document",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js"
@@ -13,11 +13,11 @@
   "type": "module",
   "dependencies": {
     "cookie-parser": "^1.4.7",
-    "cors": "^2.8.6",
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
-    "http-proxy-middleware": "^4.2.0",
-    "jsonwebtoken": "^9.0.3",
-    "nodemon": "^3.1.14"
+    "mongoose": "^9.10.3",
+    "multer": "^2.4.0",
+    "nodemon": "^3.1.14",
+    "pdf-parser": "^1.0.5"
   }
 }
