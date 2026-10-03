@@ -4,7 +4,7 @@ import "dotenv/config";
 const authGateway = async (req, res, next) => {
   try {
     const token = req.cookies?.docsphereAuthToken;
-    console.log(token);
+    // console.log(token);
     if (!token) {
       return res
         .status(401)

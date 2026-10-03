@@ -1,7 +1,7 @@
 const authMiddleware = async (req, res, next) => {
   try {
     const userId = req.headers["x-user-id"];
-    console.log(userId);
+    // console.log(userId);
     if (!userId) {
       return res.status(401).json({
         success: false,
