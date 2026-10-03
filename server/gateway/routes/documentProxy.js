@@ -1,5 +1,5 @@
 import express from "express";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import { createProxyMiddleware, fixRequestBody } from "http-proxy-middleware";
 import authGateway from "../middleware.js/authGateway.js";
 
 const documentRouteProxy = express.Router();
@@ -14,9 +14,10 @@ documentRouteProxy.use(
       proxyReq: (proxyReq, req, res) => {
         if (req.userId) {
           proxyReq.setHeader("x-user-id", req.userId);
-          // set header in lowercase or capitalcase no matters becuse when we retrive them 
+          // set header in lowercase or capitalcase no matters becuse when we retrive them
           // using req.headers["header name"] they are converted into lowercase.
         }
+        fixRequestBody(proxyReq, req);
       },
     },
   }),

@@ -1,5 +1,8 @@
 import express from "express";
-import { uploadDocument } from "../controllers/document.controller.js";
+import {
+  retrieveDocumentChunks,
+  uploadDocument,
+} from "../controllers/document.controller.js";
 import upload from "../middlewares/uploadMiddleware.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 
@@ -11,5 +14,6 @@ documentRouter.post(
   upload.single("document"),
   uploadDocument,
 );
+documentRouter.post("/retrieve-data", authMiddleware, retrieveDocumentChunks);
 
 export default documentRouter;

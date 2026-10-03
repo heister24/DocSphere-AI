@@ -8,13 +8,14 @@ export const extractTextFromPDF = async (buffer) => {
     const infoResult = await data.getInfo();
 
     const text = textResult.text;
-    const pages = infoResult.pages;
+    // const pages = infoResult.pages;
+    const totalPages = infoResult.total;
 
     await data.destroy();
 
     return {
       text,
-      pages,
+      totalPages,
     };
   } catch (error) {
     console.error("PDF extraction error:", error);

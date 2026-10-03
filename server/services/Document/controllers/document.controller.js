@@ -1,6 +1,8 @@
 import Document from "../models/document.model.js";
 import { extractTextFromPDF } from "../services/pdf.service.js";
+import { retrieveRelevantChunks } from "../services/retrieval.service.js";
 import splitText from "../services/textSplitter.service.js";
+import { storeDocumentsInQdrant } from "../services/vector.service.js";
 
 export const uploadDocument = async (req, res) => {
   try {
@@ -23,8 +25,7 @@ export const uploadDocument = async (req, res) => {
 
     // Extract text from PDF
     // console.log(req.file.buffer);
-    const { text, pages } = await extractTextFromPDF(req.file.buffer);
-    // console.log(pages, text);
+    const { text, totalPages } = await extractTextFromPDF(req.file.buffer);
     if (!text) {
       return res.status(400).json({
         success: false,
@@ -48,9 +49,16 @@ export const uploadDocument = async (req, res) => {
       fileName: req.file.originalname,
       mimeType: req.file.mimetype,
       fileSize: req.file.size,
-      status: "UPLOADED",
-      totalPages: pages.length,
+      status: "PROCESSING",
+      totalPages,
       totalChunks: chunks.length,
+    });
+
+    // Store documet in qdrant DB
+    await storeDocumentsInQdrant({
+      documents: chunks,
+      documentId: document._id,
+      userId,
     });
 
     return res.status(201).json({
@@ -69,6 +77,50 @@ export const uploadDocument = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal server error",
+    });
+  }
+};
+
+export const retrieveDocumentChunks = async (req, res) => {
+  try {
+    // const userId = req.headers["x-user-id"];
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const { query, documentId } = req.body;
+
+    if (!query || !query.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Query is required",
+      });
+    }
+
+    // Retrieve relevant chunks from Qdrant
+    const results = await retrieveRelevantChunks({
+      query,
+      userId: userId.toString(),
+      documentId,
+      limit: 5,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Relevant document chunks retrieved successfully",
+      results,
+    });
+  } catch (error) {
+    console.error("Retrieve document chunks error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to retrieve relevant document chunks",
     });
   }
 };

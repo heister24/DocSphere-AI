@@ -2,14 +2,16 @@ import express from "express";
 import "dotenv/config";
 import connectDB from "./configs/connectDB.js";
 import documentRouter from "./routes/document.routes.js";
+import { createQdrantCollection } from "./services/qdrant.service.js";
 
 const app = express();
 
 const port = process.env.PORT;
 
-await connectDB();
-
 app.use(express.json());
+
+await connectDB();
+await createQdrantCollection();
 
 app.get("/health", (req, res) => {
   res.send("Document health is good");
