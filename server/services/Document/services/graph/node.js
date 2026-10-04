@@ -125,3 +125,30 @@ export const fallbackNode = async () => {
     sources: [],
   };
 };
+
+export const filterRelevantDocumentsNode = async (state) => {
+  try {
+    const { documents = [] } = state;
+
+    const minScore = Number(process.env.RAG_MIN_SCORE || 0.5);
+
+    const relevantDocuments = documents.filter(
+      (document) => document.score >= minScore,
+    );
+
+    console.log(`Retrieved documents: ${documents.length}`);
+
+    console.log(`Relevant documents: ${relevantDocuments.length}`);
+
+    return {
+      documents: relevantDocuments,
+    };
+  } catch (error) {
+    console.error("Filter relevant documents error:", error);
+
+    return {
+      documents: [],
+      error: error.message,
+    };
+  }
+};
