@@ -6,6 +6,7 @@ const embeddingModel = new GoogleGenerativeAIEmbeddings({
   model: "gemini-embedding-001",
 });
 
+// Generate Embeddings for Documents
 export const generateEmbedding = async (documents) => {
   try {
     const texts = documents.map((doc) => doc.pageContent);
@@ -14,6 +15,27 @@ export const generateEmbedding = async (documents) => {
     return vectors;
   } catch (error) {
     console.error("Embedding generation error:", error);
+    throw error;
+  }
+};
+
+// Generate Embedding for Query
+export const generateQueryEmbedding = async (query) => {
+  try {
+    if (!query) {
+      throw new Error("Query is required");
+    }
+
+    const vector =
+      await embeddingModel.embedQuery(query);
+
+    return vector;
+  } catch (error) {
+    console.error(
+      "Query embedding generation error:",
+      error
+    );
+
     throw error;
   }
 };
