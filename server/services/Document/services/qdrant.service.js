@@ -22,7 +22,7 @@ export const createQdrantCollection = async () => {
 
     await qdrant.createCollection(COLLECTION_NAME, {
       vectors: {
-        size: 768, // Gemini embedding models produce vectors of 768 dimensions.
+        size: 3072, // Gemini embedding models produce vectors of 3072 dimensions.
         distance: "Cosine",
       },
     });

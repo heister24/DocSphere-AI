@@ -7,7 +7,7 @@ const COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME;
 export const retrieveDocuments = async (state) => {
   try {
     const { query, userId, documentId } = state;
-    if (!question) {
+    if (!query) {
       throw new Error("Question is required");
     }
 
@@ -48,13 +48,14 @@ export const retrieveDocuments = async (state) => {
 };
 
 export const generateAnswerNode = async (state) => {
-  const { query, userId, documentId, conversationHistory } = state;
+  const { query, userId, documentId, conversationHistory, documents } = state;
 
   const result = await generateAnswer({
     query,
     userId,
     documentId,
     conversationHistory,
+    documents,
   });
   return {
     answer: result.answer,
