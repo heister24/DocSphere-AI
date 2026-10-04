@@ -4,6 +4,7 @@ import connectDB from "./configs/connectDB.js";
 import documentRouter from "./routes/document.routes.js";
 import { createQdrantCollection } from "./services/qdrant.service.js";
 import chatRouter from "./routes/chat.routes.js";
+import ragRouter from "./routes/rag.routes.js";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get("/health", (req, res) => {
 
 app.use("/", documentRouter);
 app.use("/", chatRouter);
+app.use("/",ragRouter)
 
 app.listen(port, () => {
   console.log(`Document server running on port ${port}`);

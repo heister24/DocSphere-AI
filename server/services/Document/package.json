@@ -13,6 +13,7 @@
   "type": "module",
   "dependencies": {
     "@langchain/google-genai": "^2.3.2",
+    "@langchain/langgraph": "^1.4.19",
     "@langchain/textsplitters": "^1.0.2",
     "@qdrant/js-client-rest": "^1.18.0",
     "cookie-parser": "^1.4.7",
