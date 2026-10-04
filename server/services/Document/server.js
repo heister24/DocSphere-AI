@@ -3,6 +3,7 @@ import "dotenv/config";
 import connectDB from "./configs/connectDB.js";
 import documentRouter from "./routes/document.routes.js";
 import { createQdrantCollection } from "./services/qdrant.service.js";
+import chatRouter from "./routes/chat.routes.js";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/", documentRouter);
+app.use("/", chatRouter);
 
 app.listen(port, () => {
   console.log(`Document server running on port ${port}`);

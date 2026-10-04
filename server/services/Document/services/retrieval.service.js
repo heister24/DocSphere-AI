@@ -1,7 +1,7 @@
 import { generateEmbedding } from "./embedding.service.js";
 import { qdrant } from "./qdrant.service.js";
 
-export const retrieveRelevantChunks = async ({ query, userId, limit = 5 }) => {
+export const retrieveRelevantChunks = async ({ query, userId, documentId, limit = 5 }) => {
   try {
     if (!query || query.length === 0) {
       throw new Error("Query is required");
@@ -28,6 +28,15 @@ export const retrieveRelevantChunks = async ({ query, userId, limit = 5 }) => {
         },
       ],
     };
+
+    if (documentId) {
+      filter.must.push({
+        key: "documentId",
+        match: {
+          value: documentId.toString(),
+        },
+      });
+    }
 
     const searchResult = await qdrant.search(
       process.env.QDRANT_COLLECTION_NAME,
