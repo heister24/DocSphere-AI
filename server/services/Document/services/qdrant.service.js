@@ -32,3 +32,48 @@ export const createQdrantCollection = async () => {
     throw error;
   }
 };
+
+export const deleteDocumentVectors = async ({ userId, documentId }) => {
+  try {
+    if (!documentId) {
+      throw new Error("Document ID is required");
+    }
+
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
+    const collectionName = process.env.QDRANT_COLLECTION_NAME;
+
+    await qdrant.delete(collectionName, {
+      wait: true,
+      filter: {
+        must: [
+          {
+            key: "documentId",
+            match: {
+              value: documentId.toString(),
+            },
+          },
+          {
+            key: "userId",
+            match: {
+              value: userId.toString(),
+            },
+          },
+        ],
+      },
+    });
+
+    console.log(`Qdrant vectors deleted for document: ${documentId}`);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Qdrant document vector deletion error:", error);
+
+    throw error;
+  }
+};
+  
