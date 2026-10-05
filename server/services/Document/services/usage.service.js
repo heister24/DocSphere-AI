@@ -18,16 +18,7 @@ export const saveAiUsage = async ({
     const totalTokens =
       usageMetadata?.total_tokens || inputTokens + outputTokens;
 
-    // await AiUsage.create({
-    //   userId,
-    //   requestType,
-    //   inputTokens,
-    //   outputTokens,
-    //   totalTokens,
-    //   model,
-    // });
-
-    const usage = await AiUsage.create({
+    await AiUsage.create({
       userId,
       requestType,
       inputTokens,
@@ -36,7 +27,16 @@ export const saveAiUsage = async ({
       model,
     });
 
-    console.log("SAVED USAGE:", usage);
+    // const usage = await AiUsage.create({
+    //   userId,
+    //   requestType,
+    //   inputTokens,
+    //   outputTokens,
+    //   totalTokens,
+    //   model,
+    // });
+
+    // console.log("SAVED USAGE:", usage);
   } catch (error) {
     // Usage tracking should NOT break the user's AI request.
     console.error("Save AI usage error:", error);
