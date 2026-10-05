@@ -1,12 +1,14 @@
 import express from "express";
 import { createProxyMiddleware, fixRequestBody } from "http-proxy-middleware";
 import authGateway from "../middleware.js/authGateway.js";
+import { documentRateLimiter } from "../middleware.js/documentRateLimit.js";
 
 const documentRouteProxy = express.Router();
 
 documentRouteProxy.use(
   "/",
   authGateway,
+  documentRateLimiter,
   createProxyMiddleware({
     target: process.env.DOCUMENT_URL,
     changeOrigin: true,
