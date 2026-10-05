@@ -5,7 +5,7 @@ export const askDocumentQuestion = async (req, res) => {
     const { query, documentId, conversationHistory = [] } = req.body;
 
     const userId = req.user._id;
-
+    
     if (!query) {
       return res.status(400).json({
         success: false,

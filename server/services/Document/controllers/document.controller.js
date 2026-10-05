@@ -156,9 +156,7 @@ export const getDocumentById = async (req, res) => {
     const id = req.params.id;
     const userId = req.user._id;
 
-    const document = await Document.findOne({
-      $or: [{ _id: id }, { userId }],
-    }).select(
+    const document = await Document.findOne({ _id: id }, { userId }).select(
       "_id originalName fileName mimeType fileSize status errorMsg totalPages totalChunks createdAt updatedAt",
     );
 
@@ -189,7 +187,7 @@ export const deleteDocument = async (req, res) => {
     const userId = req.user._id;
 
     // Find document belonging to logged-in user
-    const document = await Document.findOne({ $or: [{ _id: id }, { userId }] });
+    const document = await Document.findOne({ _id: id, userId: userId });
     if (!document) {
       return res.status(404).json({
         success: false,
