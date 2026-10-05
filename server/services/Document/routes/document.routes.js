@@ -11,6 +11,7 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 import { validationMiddleware } from "../middlewares/validation.middleware.js";
 import { documentSchema } from "../validator/document.validator.js";
 import { validateDocumentUpload } from "../middlewares/validateDocument.middleware.js";
+import { getAiUsage } from "../controllers/usage.controller.js";
 
 const documentRouter = express.Router();
 
@@ -35,5 +36,7 @@ documentRouter.delete(
   validationMiddleware(documentSchema, "params"),
   deleteDocument,
 );
+
+documentRouter.get("/ai-usage", authMiddleware, getAiUsage);
 
 export default documentRouter;

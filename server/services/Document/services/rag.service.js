@@ -1,5 +1,5 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { retrieveRelevantChunks } from "./retrieval.service.js";
+import { saveAiUsage } from "./usage.service.js";
 
 export const llm = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
@@ -10,6 +10,7 @@ export const llm = new ChatGoogleGenerativeAI({
 //  Generate Document Answer
 export const generateAnswer = async ({
   query,
+  userId,
   documents = [],
   conversationHistory = [],
 }) => {
@@ -61,6 +62,13 @@ Answer:
 
     //  Generate Answer
     const response = await llm.invoke(prompt);
+
+    await saveAiUsage({
+      userId,
+      requestType: "RAG_ANSWER",
+      usageMetadata: response.usage_metadata,
+      model: "gemini-3.1-flash-lite",
+    });
 
     return {
       answer: response.content,

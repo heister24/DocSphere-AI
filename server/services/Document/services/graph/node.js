@@ -58,10 +58,11 @@ export const retrieveDocumentsNode = async (state) => {
 };
 
 export const generateAnswerNode = async (state) => {
-  const { query, conversationHistory = [], documents = [] } = state;
+  const { query, userId, conversationHistory = [], documents = [] } = state;
 
   const result = await generateAnswer({
     query,
+    userId,
     conversationHistory,
     documents,
   });
