@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { toast } from "react-toastify";
-import { Box } from "lucide-react";
+import { LogIn, Mail, Lock } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const Login = () => {
     <div className="flex min-h-screen flex-col justify-center bg-slate-50 py-12 sm:px-6 lg:px-8 font-sans selection:bg-slate-900 selection:text-white">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-900">
-          <Box className="h-6 w-6 text-white" />
+          <LogIn className="h-6 w-6 text-white" />
         </div>
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-slate-900">
           Sign in to your account
@@ -59,14 +59,17 @@ const Login = () => {
               >
                 Email address
               </label>
-              <div className="mt-2">
+              <div className="relative mt-2">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <Mail className="h-5 w-5 text-slate-400" aria-hidden="true" />
+                </div>
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.com"
-                  className="block w-full rounded-md border border-slate-300 px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 sm:text-sm sm:leading-6 transition-colors shadow-sm"
+                  className="block w-full rounded-md border border-slate-300 py-2.5 pl-10 pr-3 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 sm:text-sm sm:leading-6 transition-colors shadow-sm"
                   required
                 />
               </div>
@@ -87,14 +90,17 @@ const Login = () => {
                   Forgot password?
                 </Link>
               </div>
-              <div className="mt-2">
+              <div className="relative mt-2">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <Lock className="h-5 w-5 text-slate-400" aria-hidden="true" />
+                </div>
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full rounded-md border border-slate-300 px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 sm:text-sm sm:leading-6 transition-colors shadow-sm"
+                  className="block w-full rounded-md border border-slate-300 py-2.5 pl-10 pr-3 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 sm:text-sm sm:leading-6 transition-colors shadow-sm"
                   required
                 />
               </div>
