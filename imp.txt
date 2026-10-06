@@ -1,5 +1,0 @@
-findOne - need object as parameter in mongodb search
-findbyid takes string
-
-
-one main issue when i m asking question to AI then why coinversation not created  

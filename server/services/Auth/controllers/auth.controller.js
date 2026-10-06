@@ -307,7 +307,7 @@ export const getMe = async (req, res) => {
   }
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req, res) => { 
   try {
     const userId = req.user?._id;
 
