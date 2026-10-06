@@ -3,9 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import { UserPlus, Mail, Lock, KeyRound } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/slices/userSlice";
 
 const Register = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
@@ -74,6 +78,7 @@ const Register = () => {
       });
 
       if (response.data?.success) {
+        dispatch(setUserData(response.data.user));
         toast.success("Registration successful! Redirecting to login...");
         setTimeout(() => navigate("/"), 1200);
       }
@@ -146,7 +151,10 @@ const Register = () => {
                   </label>
                   <div className="relative mt-2">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <KeyRound className="h-5 w-5 text-slate-400" aria-hidden="true" />
+                      <KeyRound
+                        className="h-5 w-5 text-slate-400"
+                        aria-hidden="true"
+                      />
                     </div>
                     <input
                       id="otp"
@@ -169,7 +177,10 @@ const Register = () => {
                   </label>
                   <div className="relative mt-2">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <Lock className="h-5 w-5 text-slate-400" aria-hidden="true" />
+                      <Lock
+                        className="h-5 w-5 text-slate-400"
+                        aria-hidden="true"
+                      />
                     </div>
                     <input
                       id="password"
@@ -193,7 +204,10 @@ const Register = () => {
                   </label>
                   <div className="relative mt-2">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <Lock className="h-5 w-5 text-slate-400" aria-hidden="true" />
+                      <Lock
+                        className="h-5 w-5 text-slate-400"
+                        aria-hidden="true"
+                      />
                     </div>
                     <input
                       id="confirmPassword"

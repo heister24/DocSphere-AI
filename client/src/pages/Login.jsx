@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import { LogIn, Mail, Lock } from "lucide-react";
+import { setUserData } from "../redux/slices/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,12 +12,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const response = await api.post("/auth/login", { email, password });
       if (response.data?.success) {
+        dispatch(setUserData(response.data.user));
         toast.success("Logged in successfully!");
         navigate("/");
         setLoading(false);
