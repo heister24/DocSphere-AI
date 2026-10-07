@@ -12,6 +12,7 @@ const Home = () => {
   const [currentDocumentId, setCurrentDocumentId] = useState(null);
   const [currentConversationId, setCurrentConversationId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [conversations, setConversations] = useState([]);
   const messagesEndRef = useRef(null);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -20,9 +21,62 @@ const Home = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const fetchConversations = async () => {
+    try {
+      const res = await api.get("/document/conversations");
+      if (res.data?.success) {
+        setConversations(res.data.conversations);
+      }
+    } catch (error) {
+      console.error("Failed to fetch conversations:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchConversations();
+  }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleNewChat = () => {
+    setCurrentConversationId(null);
+    setCurrentDocumentId(null);
+    setMessages([]);
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
+  const handleLoadConversation = async (conversationId) => {
+    try {
+      setIsLoading(true);
+      const res = await api.get(`/document/conversations/${conversationId}`);
+      if (res.data?.success) {
+        const conv = res.data.conversation;
+        setCurrentConversationId(conv._id);
+        setCurrentDocumentId(conv.documentId);
+        
+        // Map messages to match the UI format
+        const formattedMessages = conv.messages.map(msg => ({
+          id: msg._id || Date.now().toString() + Math.random(),
+          role: msg.role === "assistant" ? "ai" : "user",
+          content: msg.content
+        }));
+        setMessages(formattedMessages);
+        
+        if (window.innerWidth < 768) {
+          setIsSidebarOpen(false);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load conversation:", error);
+      toast.error("Failed to load conversation");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSendMessage = async (msg, file) => {
     if (!msg.trim() && !file) return;
@@ -78,6 +132,7 @@ const Home = () => {
       if (chatRes.data?.success) {
         if (!currentConversationId) {
           setCurrentConversationId(chatRes.data.data.conversationId);
+          fetchConversations(); // refresh sidebar
         }
 
         const aiResponse = {
@@ -107,7 +162,14 @@ const Home = () => {
   return (
     <div className="flex h-screen bg-slate-50 font-sans text-slate-900">
       {/* Sidebar Component */}
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        toggleSidebar={toggleSidebar} 
+        conversations={conversations}
+        currentConversationId={currentConversationId}
+        onNewChat={handleNewChat}
+        onLoadConversation={handleLoadConversation}
+      />
 
       {/* Main Chat Area */}
       <div className="flex flex-1 flex-col h-full relative">

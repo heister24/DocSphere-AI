@@ -19,6 +19,18 @@ export const createConversation = async ({
   }
 };
 
+export const getUserConversations = async (userId) => {
+  try {
+    const conversations = await Conversation.find({ userId })
+      .select("_id title documentId createdAt updatedAt")
+      .sort({ createdAt: -1 });
+    return conversations;
+  } catch (error) {
+    console.error("Get user conversations error:", error);
+    throw error;
+  }
+};
+
 export const getConversation = async ({ userId, conversationId }) => {
   try {
     const conversation = await Conversation.findOne({

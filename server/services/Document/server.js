@@ -5,6 +5,7 @@ import documentRouter from "./routes/document.routes.js";
 import { createQdrantCollection } from "./services/qdrant.service.js";
 import chatRouter from "./routes/chat.routes.js";
 import ragRouter from "./routes/rag.routes.js";
+import conversationRouter from "./routes/conversation.routes.js";
 
 const app = express();
 
@@ -21,7 +22,8 @@ app.get("/health", (req, res) => {
 
 app.use("/", documentRouter);
 app.use("/", chatRouter);
-app.use("/",ragRouter)
+app.use("/",ragRouter);
+app.use("/", conversationRouter);
 
 app.listen(port, () => {
   console.log(`Document server running on port ${port}`);
