@@ -5,6 +5,7 @@ import ChatInput from "../components/ChatInput";
 import ChatMessage from "../components/ChatMessage";
 import api from "../services/api";
 import { toast } from "react-toastify";
+import SettingsModal from "../components/SettingsModal";
 
 const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -12,6 +13,7 @@ const Home = () => {
   const [currentDocumentId, setCurrentDocumentId] = useState(null);
   const [currentConversationId, setCurrentConversationId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [conversations, setConversations] = useState([]);
   const messagesEndRef = useRef(null);
 
@@ -170,7 +172,10 @@ const Home = () => {
         currentConversationId={currentConversationId}
         onNewChat={handleNewChat}
         onLoadConversation={handleLoadConversation}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
+
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
 
       {/* Main Chat Area */}
       <div className="flex flex-1 flex-col h-full relative">
