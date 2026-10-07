@@ -1,4 +1,5 @@
-import { User, Bot } from "lucide-react";
+import { User, Bot, FileText } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 const ChatMessage = ({ message }) => {
   const isUser = message.role === "user";
@@ -13,13 +14,30 @@ const ChatMessage = ({ message }) => {
         </div>
         
         {/* Message Content */}
-        <div className="flex-1 space-y-2 text-slate-800">
+        <div className="flex-1 space-y-4 text-slate-800">
           <div className="font-semibold text-sm">
             {isUser ? "You" : "DocSphere AI"}
           </div>
           <div className="prose prose-slate max-w-none text-sm md:text-base leading-relaxed">
-            {message.content}
+            <ReactMarkdown>{message.content}</ReactMarkdown>
           </div>
+          
+          {/* Sources */}
+          {!isUser && message.sources && message.sources.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-slate-200">
+              <div className="text-xs font-semibold text-slate-500 mb-2 flex items-center gap-1">
+                <FileText size={14} />
+                Sources
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {message.sources.map((source, idx) => (
+                  <div key={idx} className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded-md max-w-[200px] truncate" title={source.text}>
+                     Reference {idx + 1}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
       </div>

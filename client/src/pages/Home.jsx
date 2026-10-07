@@ -139,6 +139,7 @@ const Home = () => {
           id: Date.now().toString(),
           role: "ai",
           content: chatRes.data.data.answer,
+          sources: chatRes.data.data.sources,
         };
         setMessages((prev) => [...prev, aiResponse]);
       } else {
