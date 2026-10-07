@@ -6,6 +6,7 @@ import ChatMessage from "../components/ChatMessage";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import SettingsModal from "../components/SettingsModal";
+import DocumentLibraryModal from "../components/DocumentLibraryModal";
 
 const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -14,6 +15,7 @@ const Home = () => {
   const [currentConversationId, setCurrentConversationId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [conversations, setConversations] = useState([]);
   const messagesEndRef = useRef(null);
 
@@ -49,6 +51,16 @@ const Home = () => {
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);
     }
+  };
+
+  const handleSelectDocument = (documentId) => {
+    setCurrentDocumentId(documentId);
+    setCurrentConversationId(null);
+    setMessages([]);
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+    toast.success("Document selected. You can now chat with it.");
   };
 
   const handleLoadConversation = async (conversationId) => {
@@ -173,9 +185,15 @@ const Home = () => {
         onNewChat={handleNewChat}
         onLoadConversation={handleLoadConversation}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenLibrary={() => setIsLibraryOpen(true)}
       />
 
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <DocumentLibraryModal 
+        isOpen={isLibraryOpen} 
+        onClose={() => setIsLibraryOpen(false)} 
+        onSelectDocument={handleSelectDocument}
+      />
 
       {/* Main Chat Area */}
       <div className="flex flex-1 flex-col h-full relative">

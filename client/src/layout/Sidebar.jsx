@@ -8,8 +8,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/slices/userSlice";
 import api from "../services/api";
+import { HardDrive } from "lucide-react";
 
-const Sidebar = ({ isOpen, toggleSidebar, conversations = [], currentConversationId, onNewChat, onLoadConversation, onOpenSettings }) => {
+const Sidebar = ({ isOpen, toggleSidebar, conversations = [], currentConversationId, onNewChat, onLoadConversation, onOpenSettings, onOpenLibrary }) => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
 
@@ -75,6 +76,13 @@ const Sidebar = ({ isOpen, toggleSidebar, conversations = [], currentConversatio
 
       {/* Bottom section: User Profile & Settings */}
       <div className="border-t border-slate-800 p-3 flex flex-col gap-1">
+        <button 
+          onClick={onOpenLibrary}
+          className="flex w-full items-center gap-3 rounded-md p-3 hover:bg-slate-800 transition-colors"
+        >
+          <HardDrive size={18} />
+          <span className="text-sm">Library</span>
+        </button>
         <button 
           onClick={onOpenSettings}
           className="flex w-full items-center gap-3 rounded-md p-3 hover:bg-slate-800 transition-colors"
