@@ -5,6 +5,7 @@ import {
   getConversationHistory,
 } from "../services/conversation.service.js";
 import { generateAnswer } from "../services/rag.service.js";
+import { retrieveRelevantChunks } from "../services/retrieval.service.js";
 
 export const chatWithDocument = async (req, res) => {
   try {
@@ -75,10 +76,17 @@ export const chatWithDocument = async (req, res) => {
       limit: 10,
     });
 
-    const result = await generateAnswer({
+    const retrievedChunks = await retrieveRelevantChunks({
       query: query.trim(),
       userId: userId.toString(),
       documentId,
+      limit: 5,
+    });
+
+    const result = await generateAnswer({
+      query: query.trim(),
+      userId: userId.toString(),
+      documents: retrievedChunks,
       conversationHistory: conversationHistory,
     });
 
@@ -104,7 +112,7 @@ export const chatWithDocument = async (req, res) => {
     console.error("Chat with document error:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: error.message || "Internal server error",
     });
   }
 };

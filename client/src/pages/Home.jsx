@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import Sidebar from "../layout/Sidebar";
-import { Menu } from "lucide-react";
+import { Menu, Loader2 } from "lucide-react";
 import ChatInput from "../components/ChatInput";
 import ChatMessage from "../components/ChatMessage";
+import api from "../services/api";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [currentDocumentId, setCurrentDocumentId] = useState(null);
+  const [currentConversationId, setCurrentConversationId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -19,7 +24,7 @@ const Home = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = (msg, file) => {
+  const handleSendMessage = async (msg, file) => {
     if (!msg.trim() && !file) return;
 
     // Add user message
@@ -31,17 +36,72 @@ const Home = () => {
     };
 
     setMessages((prev) => [...prev, newUserMessage]);
+    setIsLoading(true);
 
-    // Simulate AI response for now
-    setTimeout(() => {
-      const aiResponse = {
-        id: (Date.now() + 1).toString(),
+    try {
+      let docId = currentDocumentId;
+
+      // 1. Upload document if a new file is provided
+      if (file) {
+        const formData = new FormData();
+        formData.append("document", file);
+
+        const uploadRes = await api.post("/document/upload-pdf", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (uploadRes.data?.success) {
+          docId = uploadRes.data.document.id;
+          setCurrentDocumentId(docId);
+          // Reset conversation for new document
+          setCurrentConversationId(null);
+        } else {
+          throw new Error("Failed to upload document");
+        }
+      }
+
+      if (!docId) {
+        toast.error("Please upload a document first!");
+        setIsLoading(false);
+        return;
+      }
+
+      // 2. Send chat message
+      const chatRes = await api.post("/document/chat", {
+        query: msg || "Please explain this document", // Ensure query is not empty if just a file is uploaded
+        documentId: docId,
+        conversationId: currentConversationId,
+      });
+
+      if (chatRes.data?.success) {
+        if (!currentConversationId) {
+          setCurrentConversationId(chatRes.data.data.conversationId);
+        }
+
+        const aiResponse = {
+          id: Date.now().toString(),
+          role: "ai",
+          content: chatRes.data.data.answer,
+        };
+        setMessages((prev) => [...prev, aiResponse]);
+      } else {
+        throw new Error("Failed to get response");
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast.error(error.response?.data?.message || "Something went wrong.");
+
+      const errorMsg = {
+        id: Date.now().toString(),
         role: "ai",
-        content:
-          "I am a simulated AI response. The backend is not yet connected.",
+        content: "Sorry, I encountered an error processing your request.",
       };
-      setMessages((prev) => [...prev, aiResponse]);
-    }, 1000);
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -77,13 +137,28 @@ const Home = () => {
               {messages.map((message) => (
                 <ChatMessage key={message.id} message={message} />
               ))}
+              {isLoading && (
+                <div className="flex w-full py-6 bg-slate-50 border-y border-slate-100">
+                  <div className="mx-auto flex w-full max-w-3xl gap-4 px-4 md:px-0">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-emerald-500 text-white">
+                      <Loader2 size={20} className="animate-spin" />
+                    </div>
+                    <div className="flex-1 space-y-2 text-slate-800">
+                      <div className="font-semibold text-sm">DocSphere AI</div>
+                      <div className="text-sm md:text-base animate-pulse">
+                        Thinking...
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div ref={messagesEndRef} />
             </div>
           )}
         </main>
 
         {/* Chat Input Area */}
-        <div className="p-4 md:p-6 bg-gradient-to-t from-slate-50 to-transparent relative z-10 shrink-0">
+        <div className="p-4 md:p-6 bg-linear-to-t from-slate-50 to-transparent relative z-10 shrink-0">
           <ChatInput onSendMessage={handleSendMessage} />
           <div className="text-xs text-center text-slate-400 mt-3">
             DocSphere AI can make mistakes. Consider verifying important

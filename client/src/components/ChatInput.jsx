@@ -39,13 +39,13 @@ const ChatInput = ({ onSendMessage, onFileUpload }) => {
   };
 
   return (
-    <div className="mx-auto max-w-3xl flex flex-col border border-slate-300 rounded-xl bg-white shadow-sm focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition-all">
+    <div className="mx-auto max-w-3xl flex flex-col border border-slate-300 rounded-xl bg-white shadow-sm focus-within:ring-1 focus-within:ring-slate-400 transition-all">
       {/* Attached File Preview */}
       {selectedFile && (
         <div className="px-4 pt-3 flex flex-wrap gap-2">
           <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-sm">
             <Paperclip size={14} />
-            <span className="max-w-[200px] truncate">{selectedFile.name}</span>
+            <span className="max-w-50 truncate">{selectedFile.name}</span>
             <button
               onClick={removeFile}
               className="ml-1 hover:bg-indigo-200 p-0.5 rounded-full transition-colors"
@@ -74,7 +74,7 @@ const ChatInput = ({ onSendMessage, onFileUpload }) => {
         </button>
 
         <textarea
-          className="flex-1 max-h-48 min-h-[44px] resize-none bg-transparent p-3 text-slate-700 placeholder-slate-400 focus:outline-none"
+          className="flex-1 max-h-48 min-h-11 resize-none bg-transparent p-3 text-slate-700 focus:outline-none"
           placeholder="Message DocSphere AI..."
           rows={1}
           value={message}
@@ -89,7 +89,7 @@ const ChatInput = ({ onSendMessage, onFileUpload }) => {
         <button
           onClick={handleSend}
           disabled={!message.trim() && !selectedFile}
-          className="p-2 mb-1 mr-1 text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:text-slate-500 rounded-lg transition-colors"
+          className="p-2 mb-1 mr-1 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
         >
           <Send size={18} />
         </button>
