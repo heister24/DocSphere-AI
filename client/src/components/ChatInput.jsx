@@ -40,7 +40,6 @@ const ChatInput = ({ onSendMessage, onFileUpload }) => {
 
   return (
     <div className="mx-auto max-w-3xl flex flex-col border border-slate-300 rounded-xl bg-white shadow-sm focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition-all">
-      
       {/* Attached File Preview */}
       {selectedFile && (
         <div className="px-4 pt-3 flex flex-wrap gap-2">
@@ -81,7 +80,7 @@ const ChatInput = ({ onSendMessage, onFileUpload }) => {
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
-            e.target.style.height = 'auto';
+            e.target.style.height = "auto";
             e.target.style.height = `${e.target.scrollHeight}px`;
           }}
           onKeyDown={handleKeyDown}
