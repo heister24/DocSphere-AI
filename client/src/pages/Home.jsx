@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Sidebar from "../layout/Sidebar";
 import { Menu } from "lucide-react";
+import ChatInput from "../components/ChatInput";
 
 const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -8,7 +9,7 @@ const Home = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="flex h-screen bg-white font-sans text-slate-900">
+    <div className="flex h-screen bg-slate-50 font-sans text-slate-900">
       {/* Sidebar Component */}
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
@@ -16,7 +17,7 @@ const Home = () => {
       <div className="flex flex-1 flex-col h-full relative">
         
         {/* Mobile Header (Shows only on small screens when sidebar is hidden) */}
-        <header className="flex h-14 items-center border-b border-slate-200 px-4 md:hidden">
+        <header className="flex h-14 items-center bg-white border-b border-slate-200 px-4 md:hidden">
           <button
             onClick={toggleSidebar}
             className="rounded-md p-2 hover:bg-slate-100"
@@ -32,14 +33,20 @@ const Home = () => {
             <h1 className="text-4xl font-bold text-slate-300 mb-8">
               How can I help you today?
             </h1>
-            {/* We will build the chat messages and input here next! */}
+            {/* Future chat messages will be mapped here */}
           </div>
         </main>
         
-        {/* Chat Input Placeholder */}
-        <div className="p-4 md:p-6 border-t border-slate-100 md:border-transparent">
-           <div className="mx-auto max-w-3xl border border-slate-300 rounded-xl p-4 shadow-sm text-slate-400 bg-white">
-              Message DocSphere AI...
+        {/* Chat Input Area */}
+        <div className="p-4 md:p-6 bg-gradient-to-t from-slate-50 to-transparent relative z-10">
+           <ChatInput 
+             onSendMessage={(msg, file) => {
+               console.log("Sending message:", msg, "File:", file?.name);
+               // Future: Add action to dispatch message or upload logic
+             }} 
+           />
+           <div className="text-xs text-center text-slate-400 mt-3">
+             DocSphere AI can make mistakes. Consider verifying important information.
            </div>
         </div>
 

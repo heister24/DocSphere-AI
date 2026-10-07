@@ -15,7 +15,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   const handleLogout = async () => {
     try {
-      await api.post("/auth/logout"); // Ensure this endpoint exists in your backend
+      await api.get("/auth/logout"); 
       dispatch(logoutUser());
     } catch (error) {
       console.error("Logout failed:", error);
